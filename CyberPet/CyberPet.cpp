@@ -26,11 +26,15 @@ int main()
     void StartMenu(string&);
     char MainMenu(string);
     void Activities(string, int&, int&, int&, char&, int&);
+    void TimeKeeping(int&, int&, int&, chrono::system_clock::time_point);
 
 
     // Call the start menu to get the pets name.
     StartMenu(PetName);
 
+
+    // Call timekeeping function so  time is kept as soon as the player names the pet.
+    std::thread Time(TimeKeeping, std::ref(FoodStatus), std::ref(SleepStatus), std::ref(Happiness), start);
 
     // Pause for 5 seconds and clear the console.
     Sleep5Sec;
@@ -138,6 +142,66 @@ void Activities(string Name, int& FStatus, int& SStatus, int& HStatus, char& Tem
     }
 }
 
-void TimeKeeping() {
+void TimeKeeping(int& FoodStat, int& SleepStat, int& HappinessStat, chrono::system_clock::time_point StartTime) {
+    int loop = 1;
+    double Diff;
 
+    //              Signing off comments for 29th
+    // Not sure how to loop time calc to be useful for the do while loops
+    // Also don't think the nested do while loop is right as it may take away more than 1, as it will repeat under every instance that the status is between 2 and 5. 
+    // If loop will likely be better here.
+    // See if it's possible to get the time as an int instead of double, or a way to extract straight as seconds(?)
+
+
+    do {
+        auto firstEnd = std::chrono::system_clock::now();
+        std::chrono::duration <double> firstDiff = firstEnd - StartTime;
+        std::ref(Diff) == firstDiff.count();
+    } while (loop == 1);
+
+    // Decrease times are in ms
+    // The FoodDecrease time is 15mins
+    double FoodDecrease = 30.00;
+    // The SleepDecrease time is 30mins
+    double SleepDecrease = 60.00;
+    do {
+        cout << "pop1";
+        // When the FoodStatus is between 2 and 5 it will check if the time since the program has started 
+        do {
+            cout << "pop2";
+            // Create a time variable that is marked when the FoodStatus is in the range of 2 and 5.
+            auto fEnd = std::chrono::system_clock::now();
+
+            // Find the time difference between the start point of the program and the end point created above.
+            std::chrono::duration<double> fDiff = fEnd - StartTime;
+
+            // Assign this value to a double variable.
+            double fTimeDiff = fDiff.count();
+
+            // If the difference is the same as the decrease time then decrease FoodStatus by 1.
+            if (fTimeDiff == FoodDecrease) {
+                FoodStat = FoodStat - 1;
+                cout << "pop";
+            }
+        } while (FoodStat >= 2 && FoodStat <= 5);
+    } while (Diff < FoodDecrease);
+
+    do {
+        // When the SleepStatus is between 2 and 5 it will check if the time since the program has started 
+        do {
+            // Create a time variable that is marked when the FoodStatus is in the range of 2 and 5.
+            auto send = std::chrono::system_clock::now();
+
+            // Find the time difference between the start point of the program and the end point created above.
+            std::chrono::duration<double> sdiff = send - StartTime;
+
+            // Assign this value to a double variable.
+            double sTimeDiff = sdiff.count();
+
+            // If the difference is the same as the decrease time then decrease SleepStatus by 1.
+            if (sTimeDiff == SleepDecrease) {
+                SleepStat = SleepStat - 1;
+            }
+        } while (SleepStat >= 2 && SleepStat <= 5);
+    } while (Diff < SleepDecrease);
 }
