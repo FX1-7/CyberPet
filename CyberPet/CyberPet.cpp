@@ -26,14 +26,16 @@ int main()
     void StartMenu(string&);
     char MainMenu(string);
     void Activities(string, int&, int&, int&, char&, int&);
-    void TimeKeeping(int&, int&, int&, chrono::system_clock::time_point);
+    void FoodStatusDecrease(int&, chrono::system_clock::time_point);
+    void SleepStatusDecrease(int&, chrono::system_clock::time_point);
 
 
     // Call the start menu to get the pets name.
     StartMenu(PetName);
 
     // Call timekeeping function so  time is kept as soon as the player names the pet.
-    std::thread Time(TimeKeeping, std::ref(FoodStatus), std::ref(SleepStatus), std::ref(Happiness), start);
+    std::thread FoodTime(FoodStatusDecrease, std::ref(FoodStatus), start);
+    std::thread SleepTime(SleepStatusDecrease, std::ref(FoodStatus), start);
 
     // Pause for 5 seconds and clear the console.
     Sleep5Sec;
@@ -68,6 +70,17 @@ void StartMenu(string& i) {
     else {
         cout << "No Name selected";
     }
+}
+
+string StatusCreator(string Status, int enumVal) {
+    enum FoodStatus{Dead, Starving, NeedsFood, SlightlyHungry, Full};
+    static const char* FoodStatus[] = { "Dead", "Starving", "Needs food", "Slightly Hungry", "Full" };
+    enum SleepStatus{Collapsed, DozingOff, Tired, Awake, Energetic};
+    static const char* SleepStatus[] = { "Collapsed", "Dozing off", "Tired", "Awake", "Energetic" };
+    enum Happiness{Depressed, ReallySad, Upset, Happy, VeryHappy};
+    static const char* Happiness[] = { "Depressed", "Really Sad", "Upset", "Happy", "Very Happy" };
+    string TheValue(Status[enumVal]);
+    return TheValue;
 }
 
 char MainMenu(string j) {
@@ -141,55 +154,54 @@ void Activities(string Name, int& FStatus, int& SStatus, int& HStatus, char& Tem
     }
 }
 
-void TimeKeeping(int& FoodStat, int& SleepStat, int& HappinessStat, chrono::system_clock::time_point StartTime) {
-    int loop = 1;
+void FoodStatusDecrease(int& FoodStat, chrono::system_clock::time_point StartTime) {
     double fTimeDiff = 0.00000;
+    double fTimeTally = 0.00000;
 
-    // Decrease times are in ms
-    // The FoodDecrease time is 15mins
-    double FoodDecrease = 10.00000;
-
-
-    // Decrease times are in ms
-    // The FoodDecrease time is 15mins
     // When the FoodStatus is between 2 and 5 it will check if the time since the program has started
-        do {
-            // Create a time variable that is marked when the FoodStatus is in the range of 2 and 5.
-            auto fEnd = std::chrono::system_clock::now();
+    do {
+        // Create a time variable that is marked when the FoodStatus is in the range of 2 and 5.
+        auto fEnd = std::chrono::system_clock::now();
 
-            // Find the time difference between the start point of the program and the end point created above.
-            std::chrono::duration<double> fDiff = fEnd - StartTime;
+        // Find the time difference between the start point of the program and the end point created above.
+        std::chrono::duration<double> fDiff = fEnd - StartTime;
 
-            // Assign this value to a double variable.
-            fTimeDiff = fDiff.count();
+        // Assign this value to a double variable.
+        fTimeDiff = fDiff.count();
+        fTimeDiff = fTimeDiff - fTimeTally;
 
-            // If the difference is the same as the decrease time then decrease FoodStatus by 1.
-            if (fTimeDiff != 0.00000 && fTimeDiff == FoodDecrease) {
-                FoodStat = FoodStat - 1;
-                fDiff = std::chrono::seconds::zero();
-                fTimeDiff = 0.00000;
-                cout << "pop" << endl;
-                //std::cout << fTimeDiff << endl;
-            }
-        } while(FoodStat >= 2 && FoodStat <= 5);
+        // If the difference is the same as the decrease time then decrease FoodStatus by 1.
+        if (fTimeDiff != 0.00000 && fTimeDiff >= 30.00000 && fTimeDiff < 30.00001) {
+            FoodStat = FoodStat - 1;
+            fTimeTally = fTimeTally + fTimeDiff;
+            fDiff = std::chrono::seconds::zero();
+            fTimeDiff = 0.00000;
+        }
+    } while (FoodStat >= 2 && FoodStat <= 5);
+}
 
-        // When the SleepStatus is between 2 and 5 it will check if the time since the program has started 
-        //do {
-            // Create a time variable that is marked when the FoodStatus is in the range of 2 and 5.
-            //auto sEnd = std::chrono::system_clock::now();
+void SleepStatusDecrease(int& SleepStat, chrono::system_clock::time_point StartTime) {
+    double sTimeDiff = 0.00000;
+    double sTimeTally = 0.00000;
 
-            // Find the time difference between the start point of the program and the end point created above.
-            //std::chrono::duration<double> sdiff = sEnd - StartTime;
+    // When the SleepStatus is between 2 and 5 it will check if the time since the program has started 
+    do {
+        // Create a time variable that is marked when the FoodStatus is in the range of 2 and 5.
+        auto sEnd = std::chrono::system_clock::now();
 
-            // Assign this value to a double variable.
-            //double sTimeDiff = 0.00000;
-            //sTimeDiff = sdiff.count();
+        // Find the time difference between the start point of the program and the end point created above.
+        std::chrono::duration<double> sDiff = sEnd - StartTime;
 
-            // If the difference is the same as the decrease time then decrease SleepStatus by 1.
-            //if (sTimeDiff != 0 && sTimeDiff == SleepDecrease) {
-                //SleepStat = SleepStat - 1;
-                //sTimeDiff = 0.00000;
-                //cout << "Pop" << endl;
-            //}
-        //} while (SleepStat >= 2 && SleepStat <= 5);
+        // Assign this value to a double variable.
+        sTimeDiff = sDiff.count();
+        sTimeDiff = sTimeDiff - sTimeTally;
+
+        // If the difference is the same as the decrease time then decrease SleepStatus by 1.
+        if (sTimeDiff != 0 && sTimeDiff >= 30.00000 && sTimeDiff < 30.00001) {
+            SleepStat = SleepStat - 1;
+            sTimeTally = sTimeTally + sTimeDiff;
+            sDiff = std::chrono::seconds::zero();
+            sTimeDiff = 0.00000;
+        }
+    } while (SleepStat >= 2 && SleepStat <= 5);
 }
