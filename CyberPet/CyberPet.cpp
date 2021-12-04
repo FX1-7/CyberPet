@@ -28,6 +28,7 @@ int main()
     void Activities(string, int&, int&, int&, char&, int&);
     void FoodStatusDecrease(int&, chrono::system_clock::time_point);
     void SleepStatusDecrease(int&, chrono::system_clock::time_point);
+    string
 
 
     // Call the start menu to get the pets name.
@@ -72,15 +73,16 @@ void StartMenu(string& i) {
     }
 }
 
-string StatusCreator(string Status, int enumVal) {
+string FoodStatusEnum(int enumVal) {
     enum FoodStatus{Dead, Starving, NeedsFood, SlightlyHungry, Full};
-    static const char* FoodStatus[] = { "Dead", "Starving", "Needs food", "Slightly Hungry", "Full" };
-    enum SleepStatus{Collapsed, DozingOff, Tired, Awake, Energetic};
-    static const char* SleepStatus[] = { "Collapsed", "Dozing off", "Tired", "Awake", "Energetic" };
-    enum Happiness{Depressed, ReallySad, Upset, Happy, VeryHappy};
-    static const char* Happiness[] = { "Depressed", "Really Sad", "Upset", "Happy", "Very Happy" };
-    string TheValue(Status[enumVal]);
-    return TheValue;
+    static const char* FoodStatuses[] = { "Dead", "Starving", "Needs food", "Slightly Hungry", "Full" };
+    string FoodMenuStatus(FoodStatuses[FoodStatus]);
+    //enum SleepStatus{Collapsed, DozingOff, Tired, Awake, Energetic};
+    //static const char* SleepStatus[] = { "Collapsed", "Dozing off", "Tired", "Awake", "Energetic" };
+    //enum Happiness{Depressed, ReallySad, Upset, Happy, VeryHappy};
+    //static const char* Happiness[] = { "Depressed", "Really Sad", "Upset", "Happy", "Very Happy" };
+    //string TheValue(Status[enumVal]);
+    return FoodMenuStatus;
 }
 
 char MainMenu(string j) {
