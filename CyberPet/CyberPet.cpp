@@ -28,7 +28,6 @@ int main()
     void Activities(string, int&, int&, int&, char&, int&);
     void FoodStatusDecrease(int&, chrono::system_clock::time_point);
     void SleepStatusDecrease(int&, chrono::system_clock::time_point);
-    string
 
 
     // Call the start menu to get the pets name.
@@ -63,27 +62,39 @@ int main()
 }
 
 void StartMenu(string& i) {
-    cout << "Hi there! Congratulations - You now own a new pet, what will you name it?: ";
-    cin >> i;
-    if (i != "Your pet") {
-        cout << i << " wow, that's a great name!";
-    }
-    else {
-        cout << "No Name selected";
+    string input;
+    string YesUpper = "Yes";
+    string YesLower = "yes";
+    string NoUpper = "No";
+    string NoLower = "no";
+
+    std::cout << "Hi there! Congratulations - You now own a new pet, do you want to give it a name?" << endl;
+    std::cout << "Yes or No: ";
+    std::cin >> input;
+    if (input == YesUpper || input == YesLower || input == NoUpper || input == NoLower) {
+        if (input == NoLower | input == NoUpper) {
+            std::cout << "No problem! Your pet will be referred to as 'Your pet'";
+            i = "Your pet";
+        }
+        else if (input == YesLower || input == YesUpper) {
+            std::cout << "Great! What would you like to name your pet?: ";
+            std::cin >> i;
+            std::cout << endl << i << " what a great name for a pet!" << endl;
+        }
     }
 }
 
-string FoodStatusEnum(int enumVal) {
-    enum FoodStatus{Dead, Starving, NeedsFood, SlightlyHungry, Full};
-    static const char* FoodStatuses[] = { "Dead", "Starving", "Needs food", "Slightly Hungry", "Full" };
-    string FoodMenuStatus(FoodStatuses[FoodStatus]);
+//string FoodStatusEnum(int enumVal) {
+    //enum FoodStatus{Dead, Starving, NeedsFood, SlightlyHungry, Full};
+    //static const char* FoodStatuses[] = { "Dead", "Starving", "Needs food", "Slightly Hungry", "Full" };
+    //string FoodMenuStatus(FoodStatuses[FoodStatus]);
     //enum SleepStatus{Collapsed, DozingOff, Tired, Awake, Energetic};
     //static const char* SleepStatus[] = { "Collapsed", "Dozing off", "Tired", "Awake", "Energetic" };
     //enum Happiness{Depressed, ReallySad, Upset, Happy, VeryHappy};
     //static const char* Happiness[] = { "Depressed", "Really Sad", "Upset", "Happy", "Very Happy" };
     //string TheValue(Status[enumVal]);
-    return FoodMenuStatus;
-}
+    //return FoodMenuStatus;
+//}
 
 char MainMenu(string j) {
     char TempChoice;
