@@ -140,9 +140,7 @@ void FoodStatusDecrease(int& FoodStat, chrono::system_clock::time_point StartTim
 
         // If the difference is the same as the decrease time then decrease FoodStatus by 1.
         if (fTimeDiff != 0.00000 && fTimeDiff >= 30.00000 && fTimeDiff < 30.000001) {
-            cout << FoodStat << endl;
             FoodStat--;
-            cout << FoodStat << endl;
             fTimeTally = fTimeTally + fTimeDiff;
             fDiff = std::chrono::seconds::zero();
             fTimeDiff = 0.00000;
@@ -197,7 +195,9 @@ int main()
 
     // Call timekeeping function so  time is kept as soon as the player names the pet.
     std::thread FoodTime(FoodStatusDecrease, std::ref(FoodStatus), start);
-    std::thread SleepTime(SleepStatusDecrease, std::ref(FoodStatus), start);
+    std::thread SleepTime(SleepStatusDecrease, std::ref(SleepStatus), start);
+    FoodTime.detach();
+    SleepTime.detach();
 
     // Pause for 5 seconds and clear the console.
     Sleep5Sec;
