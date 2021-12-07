@@ -13,22 +13,25 @@ int main()
 
     // Declare the PetName variable to keep track of the pets name, this will be used by other functions
     string PetName = "PetName";
-    int FoodStatus = 5;
-    int SleepStatus = 5;
-    // Happiness is set to 4 as a max default - this is so that the user has incentive to play with the pet,
+    int FoodStatus = 4;
+    int SleepStatus = 4;
+
+    // Happiness is set to 3 as a max default - this is so that the user has incentive to play with the pet,
     // (to get max happiness)
-    int Happiness = 4;
+    int Happiness = 3;
     char Choice;
     int Looper = 0;
 
 
     // Declare function types
     void StartMenu(string&);
-    char MainMenu(string);
+    char MainMenu(string, string, string, string);
     void Activities(string, int&, int&, int&, char&, int&);
     void FoodStatusDecrease(int&, chrono::system_clock::time_point);
     void SleepStatusDecrease(int&, chrono::system_clock::time_point);
-
+    string FoodStatusEnum(int);
+    string SleepStatusEnum(int);
+    string HappinessStatusEnum(int);
 
     // Call the start menu to get the pets name.
     StartMenu(PetName);
@@ -42,20 +45,29 @@ int main()
     system("CLS");
 
     // Call the initial Main Menu screen.
-    Choice = MainMenu(PetName);
+    string MainMenuFoodStatus = FoodStatusEnum(FoodStatus);
+    string MainMenuSleepStatus = SleepStatusEnum(SleepStatus);
+    string MainMenuHappinessStatus = HappinessStatusEnum(Happiness);
+    Choice = MainMenu(PetName, MainMenuFoodStatus, MainMenuSleepStatus, MainMenuHappinessStatus);
     system("CLS");
 
     // Call the activities Function to run the Activity selected by the user.
     // We don't need error checking within this function for the choice selection as this was done in the Main Menu function.
     Activities(PetName, FoodStatus, SleepStatus, Happiness, Choice, Looper);
+    MainMenuFoodStatus = FoodStatusEnum(FoodStatus);
+    MainMenuSleepStatus = SleepStatusEnum(SleepStatus);
+    MainMenuHappinessStatus = HappinessStatusEnum(Happiness);
     Sleep5Sec;
     system("CLS");
 
     do {
         // Call Main Menu, this is looped so that after every action the main menu screen will show.
-        Choice = MainMenu(PetName);
+        Choice = MainMenu(PetName, MainMenuFoodStatus, MainMenuSleepStatus, MainMenuHappinessStatus);
         system("CLS");
         Activities(PetName, FoodStatus, SleepStatus, Happiness, Choice, Looper);
+        MainMenuFoodStatus = FoodStatusEnum(FoodStatus);
+        MainMenuSleepStatus = SleepStatusEnum(SleepStatus);
+        MainMenuHappinessStatus = HappinessStatusEnum(Happiness);
         Sleep5Sec;
         system("CLS");
     } while (Looper == 1);
@@ -82,25 +94,35 @@ void StartMenu(string& i) {
             std::cout << endl << i << " what a great name for a pet!" << endl;
         }
     }
+    else if (input != YesUpper || input != YesLower || input != NoUpper || input != NoLower) {
+        cout << "Your pet will be referred to as 'Your pet'" << endl;
+        i = "Your pet";
+    }
 }
 
-//string FoodStatusEnum(int enumVal) {
-    //enum FoodStatus{Dead, Starving, NeedsFood, SlightlyHungry, Full};
-    //static const char* FoodStatuses[] = { "Dead", "Starving", "Needs food", "Slightly Hungry", "Full" };
-    //string FoodMenuStatus(FoodStatuses[FoodStatus]);
-    //enum SleepStatus{Collapsed, DozingOff, Tired, Awake, Energetic};
-    //static const char* SleepStatus[] = { "Collapsed", "Dozing off", "Tired", "Awake", "Energetic" };
-    //enum Happiness{Depressed, ReallySad, Upset, Happy, VeryHappy};
-    //static const char* Happiness[] = { "Depressed", "Really Sad", "Upset", "Happy", "Very Happy" };
-    //string TheValue(Status[enumVal]);
-    //return FoodMenuStatus;
-//}
+string FoodStatusEnum(int enum_val) {
+    static const char *FoodStatuses[] = { "Dead", "Starving", "Needs food", "Slightly Hungry", "Full" };
+    string FoodMenuStatus(FoodStatuses[enum_val]);
+    return FoodMenuStatus;
+}
 
-char MainMenu(string j) {
+string SleepStatusEnum(int enum_val) {
+    static const char *SleepStatuses[] = { "Collapsed", "Dozing Off", "Tired", "Awake", "Energetic" };
+    string SleepMenuStatus(SleepStatuses[enum_val]);
+    return SleepMenuStatus;
+}
+
+string HappinessStatusEnum(int enum_val) {
+    static const char *HappinessStatuses[] = { "Depressed", "Really Sad", "Upset", "Happy Enough", "Extremely Happy" };
+    string HappinessMenuStatus(HappinessStatuses[enum_val]);
+    return HappinessMenuStatus;
+}
+
+char MainMenu(string j, string FoodEnum, string SleepEnum, string HappinessEnum) {
     char TempChoice;
     do {
-        cout << "\tFood Status: FoodStatus Sleep Status: SleepStatus\t" << endl;
-        cout << "\t\tHappiness: Happiness\t\t" << endl;
+        cout << "\tFood Status: " << FoodEnum <<" Sleep Status: " << SleepEnum << "\t" << endl;
+        cout << "\t\tHappiness: " << HappinessEnum << "\t\t" << endl;
         cout << "Press F to feed \tPress S to sleep\t Press P to play" << endl;
         cin >> TempChoice;
         if (TempChoice != 'F' && TempChoice != 'S' && TempChoice != 'P' && TempChoice != 'p'
@@ -117,7 +139,7 @@ char MainMenu(string j) {
 
 void Activities(string Name, int& FStatus, int& SStatus, int& HStatus, char& TempChoice, int& Loops) {
     if (TempChoice == 'F' || TempChoice == 'f') {
-        if (FStatus == 5) {
+        if (FStatus == 4) {
             cout << Name << " is already full!" << endl;
             Loops = 1;
         }
@@ -130,7 +152,7 @@ void Activities(string Name, int& FStatus, int& SStatus, int& HStatus, char& Tem
         }
     }
     else if (TempChoice == 'S' || TempChoice == 's') {
-        if (SStatus == 5) {
+        if (SStatus == 4) {
             cout << Name << " is already fully rested!" << endl;
             Loops = 1;
         }
@@ -143,16 +165,16 @@ void Activities(string Name, int& FStatus, int& SStatus, int& HStatus, char& Tem
         }
     }
     else if (TempChoice == 'P' || TempChoice == 'p') {
-        if (HStatus == 5) {
+        if (HStatus == 4) {
             cout << Name << " is already extremely happy!" << endl;
             Loops = 1;
         }
-        else if (HStatus == 4 && FStatus < 5 || SStatus < 5) {
+        else if (HStatus == 3 && FStatus < 4 || SStatus < 4) {
             cout << Name << " doesn't have enough energy to do this right now!"
                 "Try feeding them or making sure they are rested enough before trying to play with them again!" << endl;
             Loops = 1;
         }
-        else if (HStatus < 4) {
+        else if (HStatus < 3) {
             cout << Name << " isn't happy enough to do this right now!"
                 "Try feeding them or making sure they are rested enough before trying to play with them again!" << endl;
             Loops = 1;
@@ -171,9 +193,9 @@ void FoodStatusDecrease(int& FoodStat, chrono::system_clock::time_point StartTim
     double fTimeDiff = 0.00000;
     double fTimeTally = 0.00000;
 
-    // When the FoodStatus is between 2 and 5 it will check if the time since the program has started
+    // When the FoodStatus is between 1 and 4 it will check if the time since the program has started
     do {
-        // Create a time variable that is marked when the FoodStatus is in the range of 2 and 5.
+        // Create a time variable that is marked when the FoodStatus is in the range of 1 and 4.
         auto fEnd = std::chrono::system_clock::now();
 
         // Find the time difference between the start point of the program and the end point created above.
@@ -184,13 +206,15 @@ void FoodStatusDecrease(int& FoodStat, chrono::system_clock::time_point StartTim
         fTimeDiff = fTimeDiff - fTimeTally;
 
         // If the difference is the same as the decrease time then decrease FoodStatus by 1.
-        if (fTimeDiff != 0.00000 && fTimeDiff >= 30.00000 && fTimeDiff < 30.00001) {
-            FoodStat = FoodStat - 1;
+        if (fTimeDiff != 0.00000 && fTimeDiff >= 30.00000 && fTimeDiff < 30.000001) {
+            cout << FoodStat << endl;
+            FoodStat--;
+            cout << FoodStat << endl;
             fTimeTally = fTimeTally + fTimeDiff;
             fDiff = std::chrono::seconds::zero();
             fTimeDiff = 0.00000;
         }
-    } while (FoodStat >= 2 && FoodStat <= 5);
+    } while (FoodStat >= 1 && FoodStat <= 4);
 }
 
 void SleepStatusDecrease(int& SleepStat, chrono::system_clock::time_point StartTime) {
@@ -216,5 +240,5 @@ void SleepStatusDecrease(int& SleepStat, chrono::system_clock::time_point StartT
             sDiff = std::chrono::seconds::zero();
             sTimeDiff = 0.00000;
         }
-    } while (SleepStat >= 2 && SleepStat <= 5);
+    } while (SleepStat >= 1 && SleepStat <= 4);
 }
