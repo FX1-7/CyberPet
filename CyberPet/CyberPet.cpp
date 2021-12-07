@@ -6,73 +6,6 @@
 
 using namespace std;
 
-int main()
-{
-    // Starts tracking time since program was run.
-    auto start = std::chrono::system_clock::now();
-
-    // Declare the PetName variable to keep track of the pets name, this will be used by other functions
-    string PetName = "PetName";
-    int FoodStatus = 4;
-    int SleepStatus = 4;
-
-    // Happiness is set to 3 as a max default - this is so that the user has incentive to play with the pet,
-    // (to get max happiness)
-    int Happiness = 3;
-    char Choice;
-    int Looper = 0;
-
-
-    // Declare function types
-    void StartMenu(string&);
-    char MainMenu(string, string, string, string);
-    void Activities(string, int&, int&, int&, char&, int&);
-    void FoodStatusDecrease(int&, chrono::system_clock::time_point);
-    void SleepStatusDecrease(int&, chrono::system_clock::time_point);
-    string FoodStatusEnum(int);
-    string SleepStatusEnum(int);
-    string HappinessStatusEnum(int);
-
-    // Call the start menu to get the pets name.
-    StartMenu(PetName);
-
-    // Call timekeeping function so  time is kept as soon as the player names the pet.
-    std::thread FoodTime(FoodStatusDecrease, std::ref(FoodStatus), start);
-    std::thread SleepTime(SleepStatusDecrease, std::ref(FoodStatus), start);
-
-    // Pause for 5 seconds and clear the console.
-    Sleep5Sec;
-    system("CLS");
-
-    // Call the initial Main Menu screen.
-    string MainMenuFoodStatus = FoodStatusEnum(FoodStatus);
-    string MainMenuSleepStatus = SleepStatusEnum(SleepStatus);
-    string MainMenuHappinessStatus = HappinessStatusEnum(Happiness);
-    Choice = MainMenu(PetName, MainMenuFoodStatus, MainMenuSleepStatus, MainMenuHappinessStatus);
-    system("CLS");
-
-    // Call the activities Function to run the Activity selected by the user.
-    // We don't need error checking within this function for the choice selection as this was done in the Main Menu function.
-    Activities(PetName, FoodStatus, SleepStatus, Happiness, Choice, Looper);
-    MainMenuFoodStatus = FoodStatusEnum(FoodStatus);
-    MainMenuSleepStatus = SleepStatusEnum(SleepStatus);
-    MainMenuHappinessStatus = HappinessStatusEnum(Happiness);
-    Sleep5Sec;
-    system("CLS");
-
-    do {
-        // Call Main Menu, this is looped so that after every action the main menu screen will show.
-        Choice = MainMenu(PetName, MainMenuFoodStatus, MainMenuSleepStatus, MainMenuHappinessStatus);
-        system("CLS");
-        Activities(PetName, FoodStatus, SleepStatus, Happiness, Choice, Looper);
-        MainMenuFoodStatus = FoodStatusEnum(FoodStatus);
-        MainMenuSleepStatus = SleepStatusEnum(SleepStatus);
-        MainMenuHappinessStatus = HappinessStatusEnum(Happiness);
-        Sleep5Sec;
-        system("CLS");
-    } while (Looper == 1);
-}
-
 void StartMenu(string& i) {
     string input;
     string YesUpper = "Yes";
@@ -101,19 +34,19 @@ void StartMenu(string& i) {
 }
 
 string FoodStatusEnum(int enum_val) {
-    static const char *FoodStatuses[] = { "Dead", "Starving", "Needs food", "Slightly Hungry", "Full" };
+    static const char* FoodStatuses[] = { "Dead", "Starving", "Needs food", "Slightly Hungry", "Full" };
     string FoodMenuStatus(FoodStatuses[enum_val]);
     return FoodMenuStatus;
 }
 
 string SleepStatusEnum(int enum_val) {
-    static const char *SleepStatuses[] = { "Collapsed", "Dozing Off", "Tired", "Awake", "Energetic" };
+    static const char* SleepStatuses[] = { "Collapsed", "Dozing Off", "Tired", "Awake", "Energetic" };
     string SleepMenuStatus(SleepStatuses[enum_val]);
     return SleepMenuStatus;
 }
 
 string HappinessStatusEnum(int enum_val) {
-    static const char *HappinessStatuses[] = { "Depressed", "Really Sad", "Upset", "Happy Enough", "Extremely Happy" };
+    static const char* HappinessStatuses[] = { "Depressed", "Really Sad", "Upset", "Happy Enough", "Extremely Happy" };
     string HappinessMenuStatus(HappinessStatuses[enum_val]);
     return HappinessMenuStatus;
 }
@@ -121,7 +54,7 @@ string HappinessStatusEnum(int enum_val) {
 char MainMenu(string j, string FoodEnum, string SleepEnum, string HappinessEnum) {
     char TempChoice;
     do {
-        cout << "\tFood Status: " << FoodEnum <<" Sleep Status: " << SleepEnum << "\t" << endl;
+        cout << "\tFood Status: " << FoodEnum << " Sleep Status: " << SleepEnum << "\t" << endl;
         cout << "\t\tHappiness: " << HappinessEnum << "\t\t" << endl;
         cout << "Press F to feed \tPress S to sleep\t Press P to play" << endl;
         cin >> TempChoice;
@@ -241,4 +174,60 @@ void SleepStatusDecrease(int& SleepStat, chrono::system_clock::time_point StartT
             sTimeDiff = 0.00000;
         }
     } while (SleepStat >= 1 && SleepStat <= 4);
+}
+
+int main()
+{
+    // Starts tracking time since program was run.
+    auto start = std::chrono::system_clock::now();
+
+    // Declare the PetName variable to keep track of the pets name, this will be used by other functions
+    string PetName = "PetName";
+    int FoodStatus = 4;
+    int SleepStatus = 4;
+
+    // Happiness is set to 3 as a max default - this is so that the user has incentive to play with the pet,
+    // (to get max happiness)
+    int Happiness = 3;
+    char Choice;
+    int Looper = 0;
+
+    // Call the start menu to get the pets name.
+    StartMenu(PetName);
+
+    // Call timekeeping function so  time is kept as soon as the player names the pet.
+    std::thread FoodTime(FoodStatusDecrease, std::ref(FoodStatus), start);
+    std::thread SleepTime(SleepStatusDecrease, std::ref(FoodStatus), start);
+
+    // Pause for 5 seconds and clear the console.
+    Sleep5Sec;
+    system("CLS");
+
+    // Call the initial Main Menu screen.
+    string MainMenuFoodStatus = FoodStatusEnum(FoodStatus);
+    string MainMenuSleepStatus = SleepStatusEnum(SleepStatus);
+    string MainMenuHappinessStatus = HappinessStatusEnum(Happiness);
+    Choice = MainMenu(PetName, MainMenuFoodStatus, MainMenuSleepStatus, MainMenuHappinessStatus);
+    system("CLS");
+
+    // Call the activities Function to run the Activity selected by the user.
+    // We don't need error checking within this function for the choice selection as this was done in the Main Menu function.
+    Activities(PetName, FoodStatus, SleepStatus, Happiness, Choice, Looper);
+    MainMenuFoodStatus = FoodStatusEnum(FoodStatus);
+    MainMenuSleepStatus = SleepStatusEnum(SleepStatus);
+    MainMenuHappinessStatus = HappinessStatusEnum(Happiness);
+    Sleep5Sec;
+    system("CLS");
+
+    do {
+        // Call Main Menu, this is looped so that after every action the main menu screen will show.
+        Choice = MainMenu(PetName, MainMenuFoodStatus, MainMenuSleepStatus, MainMenuHappinessStatus);
+        system("CLS");
+        Activities(PetName, FoodStatus, SleepStatus, Happiness, Choice, Looper);
+        MainMenuFoodStatus = FoodStatusEnum(FoodStatus);
+        MainMenuSleepStatus = SleepStatusEnum(SleepStatus);
+        MainMenuHappinessStatus = HappinessStatusEnum(Happiness);
+        Sleep5Sec;
+        system("CLS");
+    } while (Looper == 1);
 }
