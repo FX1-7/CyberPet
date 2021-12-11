@@ -2,83 +2,113 @@
 #include <string>
 #include <chrono>
 #include <thread>
+// Definition, just to make the code look a little neater :)
 #define Sleep5Sec std::this_thread::sleep_for(std::chrono::milliseconds(5000))
 
 using namespace std;
 
+// Start menu, this will ask the user if they want to name their pet or not.
 void StartMenu(string& i) {
+    // Declare variables
     string input;
     string YesUpper = "Yes";
     string YesLower = "yes";
     string NoUpper = "No";
     string NoLower = "no";
 
+    // Get user input.
     std::cout << "Hi there! Congratulations - You now own a new pet, do you want to give it a name?" << endl;
     std::cout << "Yes or No: ";
     std::cin >> input;
+    // Checking how they responded
     if (input == YesUpper || input == YesLower || input == NoUpper || input == NoLower) {
+        // If no, tell them how the pet will be referred to and set the pat variable to "Your pet".
         if (input == NoLower || input == NoUpper) {
-            std::cout << "No problem! Your pet will be referred to as 'Your pet'";
+            cout << "No problem! Your pet will be referred to as 'Your pet'";
             i = "Your pet";
         }
+        // If Yes, ask them what they would like it to be called.
         else if (input == YesLower || input == YesUpper) {
-            std::cout << "Great! What would you like to name your pet?: ";
-            std::cin >> i;
-            std::cout << endl << i << " what a great name for a pet!" << endl;
+            cout << "Great! What would you like to name your pet?: ";
+            // Set the pet variable to their name.
+            cin >> i;
+            // Show it has been saved.
+            cout << endl << i << " what a great name for a pet!" << endl;
         }
     }
+    // If no input or any incorrect input entered then just refer to it as "Your pet" for ease.
     else if (input != YesUpper || input != YesLower || input != NoUpper || input != NoLower) {
         cout << "Your pet will be referred to as 'Your pet'" << endl;
         i = "Your pet";
     }
 }
 
+// Converting the int status of the pet to string values that can be used in the Main Menu.
 string FoodStatusEnum(int enum_val) {
     static const char* FoodStatuses[] = { "Dead", "Starving", "Needs food", "Slightly Hungry", "Full" };
     string FoodMenuStatus(FoodStatuses[enum_val]);
+    // Return the string value for use in Main menu.
     return FoodMenuStatus;
 }
 
+// Converting the int status of the pet to string values that can be used in the Main Menu.
 string SleepStatusEnum(int enum_val) {
     static const char* SleepStatuses[] = { "Collapsed", "Dozing Off", "Tired", "Awake", "Energetic" };
     string SleepMenuStatus(SleepStatuses[enum_val]);
+    // Return the string value for use in Main menu.
     return SleepMenuStatus;
 }
 
+// Converting the int status of the pet to string values that can be used in the Main Menu.
 string HappinessStatusEnum(int enum_val) {
     static const char* HappinessStatuses[] = { "Depressed", "Really Sad", "Upset", "Happy Enough", "Extremely Happy" };
     string HappinessMenuStatus(HappinessStatuses[enum_val]);
+    // Return the string value for use in Main menu.
     return HappinessMenuStatus;
 }
 
+// This is the MainMenu where the user can select actions to do with the pet.
 char MainMenu(string j, string FoodEnum, string SleepEnum, string HappinessEnum, int DeathCheck) {
+    // Variable to hold their choice, this is used in the activities function.
     char TempChoice;
     do {
-        cout << "\tFood Status: " << FoodEnum << " Sleep Status: " << SleepEnum << "\t" << endl;
+        // Show each status 
+        cout << "\tFood Status: " << FoodEnum << "\t Sleep Status: " << SleepEnum << "\t" << endl;
         cout << "\t\tHappiness: " << HappinessEnum << "\t\t" << endl;
+        cout << endl;
         cout << "Press F to feed \tPress S to sleep\t Press P to play" << endl;
+        // Get the user input
         cin >> TempChoice;
+        // Error checking for input that isn't one of the above options
         if (TempChoice != 'F' && TempChoice != 'S' && TempChoice != 'P' && TempChoice != 'p'
             && TempChoice != 'f' && TempChoice != 's') {
             system("CLS");
+            // Tell the user that it is incorrect, pause for 3 seconds and get them to try again.
             cout << "Incorrect input detected, please try again." << endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(3000));
             system("CLS");
         }
+    // Do while loop so that the error checking returns to the mainmenu if an inaccurate value is entered.
     } while (TempChoice != 'F' && TempChoice != 'S' && TempChoice != 'P' && TempChoice != 'p'
         && TempChoice != 'f' && TempChoice != 's');
+    // Return the users choice.
     return TempChoice;
 }
 
+// This function will check user input and perform actions accordingly.
 void Activities(string Name, int& FStatus, int& SStatus, int& HStatus, char& TempChoice, int& Loops){
-    if (Loops = 0) {
+    // If the pet is dead then break out of this function
+    if (Loops == 1) {
         return;
     }
+    // If the user wants to feed the pet then carry out these actions.
     if (TempChoice == 'F' || TempChoice == 'f') {
+        // If the foodstatus is 4 then the pet is already full!
         if (FStatus == 4) {
             cout << Name << " is already full!" << endl;
             Loops = 0;
         }
+        // If the pet is not full then they can eat.
         else {
             cout << Name << " had a very lovely meal!" << endl;
             cout << endl;
@@ -87,11 +117,14 @@ void Activities(string Name, int& FStatus, int& SStatus, int& HStatus, char& Tem
             FStatus = FStatus + 1;
         }
     }
+    // The user wants the pet to sleep
     else if (TempChoice == 'S' || TempChoice == 's') {
+        // If the sleepstat is at 4 then it is already full rested
         if (SStatus == 4) {
             cout << Name << " is already fully rested!" << endl;
             Loops = 0;
         }
+        // Otherwise it can sleep.
         else {
             cout << Name << " had a very nice sleep!" << endl;
             cout << endl;
@@ -100,26 +133,26 @@ void Activities(string Name, int& FStatus, int& SStatus, int& HStatus, char& Tem
             SStatus = SStatus + 1;
         }
     }
+    // The user wants to play with the pet.
     else if (TempChoice == 'P' || TempChoice == 'p') {
+        // If it's already at max happiness then let the user know.
         if (HStatus == 4) {
-            cout << Name << " is already extremely happy!" << endl;
+            cout << Name << " is happy by themselves right now!" << endl;
+            cout << "(Already at max happiness!)" << endl;
             Loops = 0;
         }
+        // If the pet needs fed or rested then it doesn't have enough energy to play.
         else if (HStatus == 3 && FStatus < 4 || SStatus < 4) {
-            cout << Name << " doesn't have enough energy to do this right now!"
-                "Try feeding them or making sure they are rested enough before trying to play with them again!" << endl;
-            Loops = 1;
-        }
-        else if (HStatus < 3) {
-            cout << Name << " isn't happy enough to do this right now!" << endl;
+            cout << Name << " doesn't have enough energy to do this right now!" << endl;
             cout << "Try feeding them or making sure they are rested enough before trying to play with them again!" << endl;
-            Loops = 0;
+            Loops = 1;
         }
         else {
             cout << Name << " had a wonderful time playing with you!" << endl;
             cout << endl;
             cout << "(+1 happiness)" << endl;
             Loops = 0;
+            // Add 1 to happiness
             HStatus = HStatus + 1;
         }
     }
@@ -179,26 +212,35 @@ void SleepStatusDecrease(int& SleepStat, chrono::system_clock::time_point StartT
     } while (SleepStat >= 1 && SleepStat <= 4);
 }
 
+// This function will decrease the Happiness stat accordingly.
+// Happiness starts at 3 and can be increased to 4 if played with.
+// But the Happiness stat will only decrease if the Sleep or Food stat drops below 3.
 void HappinessStatusDecrease(int& Happiness, int& SleepStat, int& FoodStat) {
+    // A do while loop is necessary here so that we are constantly checking.
     do {
-        if (SleepStat == 2 && FoodStat == 2) {
+        // If Sleep or Food are 2 then adjust Happiness accordingly
+        if (SleepStat == 2 || FoodStat == 2) {
             Happiness = 2;
         }
-
-        if (SleepStat == 1 && FoodStat == 1) {
+        // If Sleep or Food are 1 then adjust Happiness accordingly
+        if (SleepStat == 1 || FoodStat == 1) {
             Happiness = 1;
         }
-        
-        if (SleepStat == 0 && FoodStat == 0) {
+        // If Sleep or Food are 0 then adjust Happiness accordingly
+        if (SleepStat == 0 || FoodStat == 0) {
             Happiness = 0;
         }
     } while (Happiness >= 0);
 }
 
+// This function will check to see if any stats have reached 0, if they have then it will make the pet dead via changing the Death variable.
 void DeathCheck(int& FoodStat, int& SleepStat, int& HappinessStat, int& Exit) {
     int looper = 0;
+    // A do while loop here so it is constantly checked.
     do {
+        // If loop to check the stats
         if (FoodStat == 0 || SleepStat == 0 || HappinessStat == 0) {
+            // if the pet is dead, change the Death variable.
             Exit = 1;
         }
     } while (looper = 0);
@@ -224,8 +266,8 @@ int main()
     do {
         // Call the start menu to get the pets name.
         StartMenu(PetName);
-
-        // Call timekeeping function so  time is kept as soon as the player names the pet.
+        
+        // Time Keeping daemon threads which will run continuously as the program is being run.
         std::thread FoodTime(FoodStatusDecrease, std::ref(FoodStatus), start);
         std::thread SleepTime(SleepStatusDecrease, std::ref(SleepStatus), start, FoodStatus, std::ref(Happiness));
         std::thread HappinessTime(HappinessStatusDecrease, std::ref(Happiness), std::ref(SleepStatus), std::ref(FoodStatus));
@@ -249,9 +291,11 @@ int main()
         // Call the activities Function to run the Activity selected by the user.
         // We don't need error checking within this function for the choice selection as this was done in the Main Menu function.
         Activities(PetName, FoodStatus, SleepStatus, Happiness, Choice, Death);
+        // Enum the int status values to string values for the Main Menu output
         MainMenuFoodStatus = FoodStatusEnum(FoodStatus);
         MainMenuSleepStatus = SleepStatusEnum(SleepStatus);
         MainMenuHappinessStatus = HappinessStatusEnum(Happiness);
+        // Pause for 5 seconds
         Sleep5Sec;
         system("CLS");
 
@@ -260,14 +304,17 @@ int main()
             Choice = MainMenu(PetName, MainMenuFoodStatus, MainMenuSleepStatus, MainMenuHappinessStatus, Death);
             system("CLS");
             Activities(PetName, FoodStatus, SleepStatus, Happiness, Choice, Death);
+            // Enum the int status values to string values for the Main Menu output
             MainMenuFoodStatus = FoodStatusEnum(FoodStatus);
             MainMenuSleepStatus = SleepStatusEnum(SleepStatus);
             MainMenuHappinessStatus = HappinessStatusEnum(Happiness);
+            // Pause for 5 seconds
             Sleep5Sec;
             system("CLS");
         } while (Death == 0);
     } while (Death != 1);
     system("CLS");
+    // Tell the user the pet died
     cout << "\t\t " << PetName << " died! Better luck next time. \t\t";
     cout << endl;
     cout << endl;
